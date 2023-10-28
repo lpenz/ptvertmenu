@@ -1,0 +1,46 @@
+---
+name: CI
+on: [ workflow_dispatch, push, pull_request ]
+jobs:
+  omnilint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3.5.0
+      - uses: docker://lpenz/omnilint:0.5.1
+  python:
+    uses: lpenz/ghworkflow-python/.github/workflows/python.yml@v0.5.0
+    with:
+      docs: false
+      coveralls: true
+      publish_pypi: true
+      publish_github_release: true
+    secrets:
+      PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+  nix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.1
+      - uses: cachix/install-nix-action@v23
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+      - run: nix build
+      - run: nix flake check
+  publish-cachix:
+    needs: [ omnilint, python, nix ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.1
+        with:
+          fetch-depth: 0
+      - id: version
+        uses: docker://lpenz/ghaction-version-gen:0.13.5
+      - uses: cachix/install-nix-action@v23
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+      - uses: cachix/cachix-action@v12
+        with:
+          skipPush: ${{ steps.version.outputs.version_commit == '' }}
+          name: lpenz
+          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+      - run: nix build
+      - run: nix flake check
