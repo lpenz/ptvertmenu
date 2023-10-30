@@ -75,7 +75,7 @@ async def manmenu() -> None:
     manloader_queue: asyncio.Queue[Optional[tuple[int, str]]] = asyncio.Queue()
     manloader_task = asyncio.create_task(man_loader(contents, manloader_queue))
 
-    def current_handler(item: Optional[ManItem]) -> None:
+    def selected_handler(item: Optional[ManItem]) -> None:
         if item is not None:
             manloader_queue.put_nowait(item[1])
         else:
@@ -86,7 +86,7 @@ async def manmenu() -> None:
 
     menu = ptvertmenu.VertMenu(
         items=cast(Sequence[Item], items),
-        current_handler=current_handler,
+        selected_handler=selected_handler,
         accept_handler=accept_handler,
     )
     root_container = VSplit(
@@ -100,8 +100,8 @@ async def manmenu() -> None:
     # Use a basic style
     style = Style.from_dict(
         {
-            "vertmenu.focused vertmenu.current": "fg:black bg:white",
-            "vertmenu.unfocused vertmenu.current": "reverse",
+            "vertmenu.focused vertmenu.selected": "fg:black bg:white",
+            "vertmenu.unfocused vertmenu.selected": "reverse",
             "vertmenu.unfocused vertmenu.item": "fg:grey bg:black",
         }
     )
