@@ -6,4 +6,4 @@ build-backend = "setuptools.build_meta"
 
 [tool.mypy]
 strict = true
-files = "src, src/bin/*, tests"
+files = "src, tests"

@@ -1,5 +1,3 @@
-/.dir-locals.el
-*.egg-info/
-/venv/
 /dist/
-/.coverage
+/venv/
+/disk_img_tool.egg-info/
