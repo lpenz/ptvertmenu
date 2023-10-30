@@ -2,7 +2,7 @@
 
 import unittest
 
-from ptvertmenu.vertmenu import VertMenu
+from ptvertmenu import VertMenu
 
 
 class TestView(unittest.TestCase):

@@ -18,8 +18,7 @@ from prompt_toolkit.layout.containers import VSplit
 from prompt_toolkit.layout.layout import Layout
 from prompt_toolkit.styles import Style
 from prompt_toolkit.widgets import Frame, TextArea
-from ptvertmenu.vertmenu import VertMenu
-from ptvertmenu.vertmenuuicontrol import Item
+from ptvertmenu import Item, VertMenu
 
 E = KeyPressEvent
 
