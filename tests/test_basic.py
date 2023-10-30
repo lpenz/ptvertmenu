@@ -2,9 +2,10 @@
 
 import unittest
 
-from ptvertmenu import VertMenu
+#' from ptvertmenu import VertMenu
+import ptvertmenu
 
 
 class TestView(unittest.TestCase):
     def test_version(self) -> None:
-        print(VertMenu)
+        print(ptvertmenu.func_b(1))
