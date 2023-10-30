@@ -130,9 +130,6 @@ async def manmenu() -> None:
 
 async def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "--version", "-V", action="version", version="%(prog)s " + ptvertmenu.version()
-    )
     _ = parser.parse_args()
     await manmenu()
 

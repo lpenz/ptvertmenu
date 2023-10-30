@@ -9,4 +9,4 @@ import ptvertmenu
 
 class TestView(unittest.TestCase):
     def test_version(self):
-        ptvertmenu.version()
+        print(ptvertmenu.VertMenu)
