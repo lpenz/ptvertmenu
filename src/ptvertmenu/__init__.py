@@ -2,7 +2,7 @@
 
 import importlib.metadata
 
-from .vertmenu import VertMenu
+from .vertmenu import Item, VertMenu
 
 
 def version() -> str:
@@ -12,4 +12,5 @@ def version() -> str:
 __all__ = [
     "version",
     "VertMenu",
+    "Item",
 ]
