@@ -9,7 +9,6 @@ import os
 import re
 from typing import Generator, List, Optional, Sequence, cast
 
-import ptvertmenu
 from prompt_toolkit import Application
 from prompt_toolkit.application import get_app
 from prompt_toolkit.key_binding import KeyBindings
@@ -19,7 +18,8 @@ from prompt_toolkit.layout.containers import VSplit
 from prompt_toolkit.layout.layout import Layout
 from prompt_toolkit.styles import Style
 from prompt_toolkit.widgets import Frame, TextArea
-from ptvertmenu.vertmenu import Item
+from ptvertmenu.vertmenu import VertMenu
+from ptvertmenu.vertmenuuicontrol import Item
 
 E = KeyPressEvent
 
@@ -84,7 +84,7 @@ async def manmenu() -> None:
     def accept_handler(item: ManItem) -> None:
         get_app().layout.focus(contents)
 
-    menu = ptvertmenu.VertMenu(
+    menu = VertMenu(
         items=cast(Sequence[Item], items),
         selected_handler=selected_handler,
         accept_handler=accept_handler,

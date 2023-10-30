@@ -108,9 +108,3 @@ class VertMenu:
 
     def __pt_container__(self) -> Container:
         return self.window
-
-
-__all__ = [
-    "VertMenu",
-    "Item",
-]

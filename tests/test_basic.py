@@ -1,12 +1,10 @@
 """ptvertmenu basic tests"""
 
-# type: ignore
-
 import unittest
 
-import ptvertmenu
+from ptvertmenu.vertmenu import VertMenu
 
 
 class TestView(unittest.TestCase):
-    def test_version(self):
-        print(ptvertmenu.VertMenu)
+    def test_version(self) -> None:
+        print(VertMenu)
