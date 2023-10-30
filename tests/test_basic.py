@@ -1,18 +1,10 @@
-# Copyright (C) 2023 Leandro Lisboa Penz <lpenz@lpenz.org>
-# This file is subject to the terms and conditions defined in
-# file 'LICENSE', which is part of this source code package.
+"""ptvertmenu basic tests"""
 
-# type: ignore
-
-import os
-import tempfile
 import unittest
 
-import diskimgtool
+from ptvertmenu import VertMenu
 
 
 class TestView(unittest.TestCase):
-    def test_chdir(self):
-        with tempfile.TemporaryDirectory(dir=os.getcwd()) as d:
-            with diskimgtool.chdir(d):
-                self.assertEqual(os.getcwd(), d)
+    def test_version(self) -> None:
+        print(VertMenu)
