@@ -8,7 +8,7 @@ import logging
 import os
 import shutil
 
-from diskimgtool import chdir, chroot, image_fully_mounted, root_mounts, run
+from ptvertmenu import chdir, chroot, image_fully_mounted, root_mounts, run
 
 
 def log():

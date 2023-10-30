@@ -8,11 +8,11 @@ import os
 import tempfile
 import unittest
 
-import diskimgtool
+import ptvertmenu
 
 
 class TestView(unittest.TestCase):
     def test_chdir(self):
         with tempfile.TemporaryDirectory(dir=os.getcwd()) as d:
-            with diskimgtool.chdir(d):
+            with ptvertmenu.chdir(d):
                 self.assertEqual(os.getcwd(), d)
