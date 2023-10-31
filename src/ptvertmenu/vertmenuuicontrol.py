@@ -12,7 +12,7 @@ from prompt_toolkit.mouse_events import MouseEvent, MouseEventType
 if TYPE_CHECKING:
     from prompt_toolkit.key_binding.key_bindings import NotImplementedOrNone
 
-Item = NewType("Item", tuple[str, Any])
+Item = tuple[str, Any]
 Index = NewType("Index", int)
 
 
@@ -151,7 +151,7 @@ class VertMenuUIControl(UIControl):
         if mouse_event.event_type != MouseEventType.MOUSE_DOWN:
             return NotImplemented
         index = self._lineno_to_index.get(mouse_event.position.y)
-        if index:
+        if index is not None:
             self.selected = index
         return None
 
