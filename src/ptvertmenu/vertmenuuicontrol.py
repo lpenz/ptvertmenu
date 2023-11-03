@@ -47,6 +47,7 @@ class VertMenuUIControl(UIControl):
         self._lineno_to_index.clear()
         self._index_to_lineno.clear()
         lineno = 0
+        self._width = 30
         for index, item in self._items_enumerate():
             self._index_to_lineno[Index(index)] = lineno
             for line in item[0].split("\n"):
@@ -63,17 +64,17 @@ class VertMenuUIControl(UIControl):
         previous = None
         if self._items:
             previous = self._items[self._selected]
-            self._items = tuple(items)
-            self._gen_lineno_mappings()
-            # We keep the same selected item, if possible:
-        try:
-            self.selected_item = previous
-            return
-        except IndexError:
-            pass
-        # No luck, reset
+        self._items = tuple(items)
         self._selected = Index(0)
         self._moved_down = False
+        self._gen_lineno_mappings()
+        if previous is None:
+            return
+        # We keep the same selected item, if possible:
+        try:
+            self.selected_item = previous
+        except IndexError:
+            pass
 
     @property
     def selected(self) -> int:

@@ -102,6 +102,24 @@ class TestVertMenuUIControlSingle(unittest.TestCase):
         self.control.items = tuple([self.items[0]] + self.items[2:])
         self.assertEqual(self.control.selected, 0)
         self.assertEqual(self.control.selected_item, ("breakfast", "breakfast"))
+        self.control.items = tuple()
+        self.assertEqual(self.control.selected, 0)
+        self.assertEqual(self.control.selected_item, None)
+        self.control.items = tuple(self.items)
+        self.assertEqual(self.control.items, tuple(self.items))
+        self.assertEqual(self.control.selected, 0)
+        self.assertEqual(self.control.selected_item, ("breakfast", "breakfast"))
+
+    def test_items_width_update(self) -> None:
+        bigitem = ", ".join((str(i) for i in range(50)))
+        self.control.items = tuple([(bigitem, bigitem)])
+        width = self.control.preferred_width(999)
+        self.assertEqual(width, len(bigitem))
+        # Check if using a smaller bigitem updates the width
+        bigitem = ", ".join((str(i) for i in range(30)))
+        self.control.items = tuple([(bigitem, bigitem)])
+        width = self.control.preferred_width(999)
+        self.assertEqual(width, len(bigitem))
 
     def test_mouse(self) -> None:
         for i in range(len(self.items)):
