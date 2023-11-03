@@ -21,12 +21,15 @@ E = KeyPressEvent
 
 def showfile(contents: TextArea, item: Optional[tuple[str, Any]], index: int) -> None:
     assert item
-    filename = item[1]
+    name = item[1]
     try:
-        with open(filename, "r", encoding="utf-8", errors="replace") as fd:
-            contents.text = fd.read()
-    except (IsADirectoryError, FileNotFoundError):
-        contents.text = ""
+        if os.path.isdir(name):
+            contents.text = "\n".join(os.listdir(name))
+        else:
+            with open(name, "r", encoding="utf-8", errors="replace") as fd:
+                contents.text = fd.read()
+    except Exception as exc:
+        contents.text = f"Error: {exc}"
 
 
 def main() -> None:
