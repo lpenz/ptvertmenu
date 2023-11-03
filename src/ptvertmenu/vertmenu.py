@@ -18,7 +18,7 @@ class VertMenu:
         self,
         items: Iterable[Item],
         selected_item: Optional[Item] = None,
-        selected_handler: Optional[Callable[[Optional[Item]], None]] = None,
+        selected_handler: Optional[Callable[[Optional[Item], int], None]] = None,
         accept_handler: Optional[Callable[[Item], None]] = None,
         focusable: bool = True,
     ):
@@ -100,11 +100,35 @@ class VertMenu:
 
     def handle_selected(self) -> None:
         if self.selected_handler is not None:
-            self.selected_handler(self.control.selected_item)
+            self.selected_handler(self.control.selected_item, self.control.selected)
 
     def handle_accept(self) -> None:
         if self.accept_handler is not None and self.control.selected_item is not None:
             self.accept_handler(self.control.selected_item)
+
+    @property
+    def items(self) -> tuple[Item, ...]:
+        return self.control.items
+
+    @items.setter
+    def items(self, items: Iterable[Item]) -> None:
+        self.control.items = tuple(items)
+
+    @property
+    def selected(self) -> int:
+        return self.control.selected
+
+    @selected.setter
+    def selected(self, selected: int) -> None:
+        self.control.selected = selected
+
+    @property
+    def selected_item(self) -> Optional[Item]:
+        return self.control.selected_item
+
+    @selected_item.setter
+    def selected_item(self, item: Item) -> None:
+        self.control.selected_item = item
 
     def __pt_container__(self) -> Container:
         return self.window
