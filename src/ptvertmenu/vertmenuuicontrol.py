@@ -1,6 +1,16 @@
 """Vertical menu widget for prompt-toolkit"""
 
-from typing import TYPE_CHECKING, Any, Dict, Iterable, Iterator, NewType, Optional, cast
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    Iterable,
+    Iterator,
+    NewType,
+    Optional,
+    cast,
+    Callable,
+)
 
 from prompt_toolkit.data_structures import Point
 from prompt_toolkit.filters import FilterOrBool, to_filter
@@ -24,11 +34,13 @@ class VertMenuUIControl(UIControl):
         items: Iterable[Item],
         focusable: FilterOrBool = True,
         key_bindings: Optional[KeyBindingsBase] = None,
+        selected_handler: Optional[Callable[[Optional[Item], int], None]] = None,
     ):
         self._items = tuple(items)
         self._selected: Index = Index(0)
         self.focusable = to_filter(focusable)
         self.key_bindings = key_bindings
+        self.selected_handler = selected_handler
         self._width = 30
         # Mark if the last movement we did was down:
         self._moved_down = False
@@ -37,6 +49,11 @@ class VertMenuUIControl(UIControl):
         self._lineno_to_index: Dict[int, Index] = {}
         self._index_to_lineno: Dict[Index, int] = {}
         self._gen_lineno_mappings()
+        self.handle_selected()
+
+    def handle_selected(self) -> None:
+        if self.selected_handler is not None:
+            self.selected_handler(self.selected_item, self.selected)
 
     def _items_enumerate(self) -> Iterator[tuple[Index, Item]]:
         for index, item in enumerate(self._items):
@@ -69,6 +86,7 @@ class VertMenuUIControl(UIControl):
         self._moved_down = False
         self._gen_lineno_mappings()
         if previous is None:
+            self.handle_selected()
             return
         # We keep the same selected item, if possible:
         try:
@@ -87,6 +105,8 @@ class VertMenuUIControl(UIControl):
         selected = min(selected, len(self._items) - 1)
         self._selected = Index(selected)
         self._moved_down = self._selected > previous
+        if self._selected != previous:
+            self.handle_selected()
 
     @property
     def selected_item(self) -> Optional[Item]:
