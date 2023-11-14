@@ -118,6 +118,16 @@ class VertMenu:
     def selected_item(self, item: Item) -> None:
         self.control.selected_item = item
 
+    @property
+    def selected_handler(self) -> Optional[Callable[[Optional[Item], int], None]]:
+        return self.control.selected_handler
+
+    @selected_handler.setter
+    def selected_handler(
+        self, selected_handler: Optional[Callable[[Optional[Item], int], None]]
+    ) -> None:
+        self.control.selected_handler = selected_handler
+
     def __pt_container__(self) -> Container:
         return self.window
 
