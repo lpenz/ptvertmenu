@@ -3,18 +3,24 @@
 from typing import (
     TYPE_CHECKING,
     Any,
+    Callable,
     Dict,
     Iterable,
     Iterator,
     NewType,
     Optional,
     cast,
-    Callable,
 )
 
 from prompt_toolkit.data_structures import Point
 from prompt_toolkit.filters import FilterOrBool, to_filter
-from prompt_toolkit.formatted_text import StyleAndTextTuples
+from prompt_toolkit.formatted_text import (
+    AnyFormattedText,
+    StyleAndTextTuples,
+    split_lines,
+    to_formatted_text,
+    to_plain_text,
+)
 from prompt_toolkit.key_binding.key_bindings import KeyBindingsBase
 from prompt_toolkit.layout.controls import GetLinePrefixCallable, UIContent, UIControl
 from prompt_toolkit.mouse_events import MouseEvent, MouseEventType
@@ -22,7 +28,7 @@ from prompt_toolkit.mouse_events import MouseEvent, MouseEventType
 if TYPE_CHECKING:
     from prompt_toolkit.key_binding.key_bindings import NotImplementedOrNone
 
-Item = tuple[str, Any]
+Item = tuple[AnyFormattedText, Any]
 Index = NewType("Index", int)
 
 
@@ -67,7 +73,8 @@ class VertMenuUIControl(UIControl):
         self._width = 30
         for index, item in self._items_enumerate():
             self._index_to_lineno[Index(index)] = lineno
-            for line in item[0].split("\n"):
+            for formatted_line in split_lines(to_formatted_text(item[0])):
+                line = to_plain_text(formatted_line)
                 self._lineno_to_index[lineno] = index
                 lineno += 1
                 self._width = max(self._width, len(line))
@@ -140,12 +147,13 @@ class VertMenuUIControl(UIControl):
     def _get_line(self, lineno: int) -> StyleAndTextTuples:
         index = self._lineno_to_index[lineno]
         item = self._items[index]
-        itemlines = item[0].split("\n")
+        itemlines = list(split_lines(to_formatted_text(item[0])))
         line = itemlines[lineno - self._index_to_lineno[index]]
         if self.selected_item == item:
-            return [("class:vertmenu.selected", line)]
+            style = "class:vertmenu.selected"
         else:
-            return [("class:vertmenu.item", line)]
+            style = "class:vertmenu.item"
+        return [(frag[0] + " " + style if frag[0] else style, frag[1]) for frag in line]
 
     def _cursor_position(self) -> Point:
         item = self.selected_item

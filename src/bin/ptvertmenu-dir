@@ -19,7 +19,7 @@ from prompt_toolkit.widgets import Frame, TextArea
 E = KeyPressEvent
 
 
-def showfile(contents: TextArea, item: Optional[tuple[str, Any]], index: int) -> None:
+def showfile(contents: TextArea, item: Optional[tuple[Any, Any]], index: int) -> None:
     assert item
     name = item[1]
     try:
