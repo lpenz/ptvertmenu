@@ -28,7 +28,9 @@ class VertMenu:
             key_bindings=self._init_key_bindings(),
             selected_handler=selected_handler,
         )
-        self.window = Window(self.control, width=30, style=self.get_style)
+        self.window = Window(
+            self.control, width=self.preferred_width, style=self.get_style
+        )
         if selected_item is not None:
             self.control.selected_item = selected_item
 
@@ -86,6 +88,11 @@ class VertMenu:
     def handle_accept(self) -> None:
         if self.accept_handler is not None and self.control.selected_item is not None:
             self.accept_handler(self.control.selected_item)
+
+    def preferred_width(self) -> int:
+        width = self.control.preferred_width(0)
+        assert width
+        return width
 
     @property
     def items(self) -> tuple[Item, ...]:
