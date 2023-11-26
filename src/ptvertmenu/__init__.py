@@ -3,6 +3,7 @@
 import importlib.metadata
 
 from .filteredmenu import FuzzFilterVertMenu, RegexFilterVertMenu
+from .searchingmenu import FuzzSearchVertMenu, RegexSearchVertMenu
 from .vertmenu import Item, VertMenu
 
 
@@ -15,5 +16,7 @@ __all__ = [
     "VertMenu",
     "FuzzFilterVertMenu",
     "RegexFilterVertMenu",
+    "FuzzSearchVertMenu",
+    "RegexSearchVertMenu",
     "Item",
 ]
