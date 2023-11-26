@@ -99,7 +99,8 @@ class VertMenuUIControl(UIControl):
         try:
             self.selected_item = previous
         except IndexError:
-            pass
+            # Not possible, let's just handle the current item:
+            self.handle_selected()
 
     @property
     def selected(self) -> int:
