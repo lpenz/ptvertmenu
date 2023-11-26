@@ -2,6 +2,7 @@
 
 import importlib.metadata
 
+from .filteredmenu import FuzzFilterVertMenu, RegexFilterVertMenu
 from .vertmenu import Item, VertMenu
 
 
@@ -12,5 +13,7 @@ def version() -> str:
 __all__ = [
     "version",
     "VertMenu",
+    "FuzzFilterVertMenu",
+    "RegexFilterVertMenu",
     "Item",
 ]

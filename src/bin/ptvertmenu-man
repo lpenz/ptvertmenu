@@ -84,7 +84,7 @@ async def manmenu() -> None:
     def accept_handler(item: ManItem) -> None:
         get_app().layout.focus(contents)
 
-    menu = ptvertmenu.VertMenu(
+    menu = ptvertmenu.FuzzFilterVertMenu(
         items=cast(Sequence[Item], items),
         selected_handler=selected_handler,
         accept_handler=accept_handler,
