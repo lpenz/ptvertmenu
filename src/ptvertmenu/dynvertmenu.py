@@ -1,4 +1,4 @@
-"""Menu finder widgets"""
+"""Dyanmic vertical menu"""
 
 import re
 from typing import Callable, Iterable, Optional
@@ -14,7 +14,7 @@ from .vertmenu import Item, VertMenu
 E = KeyPressEvent
 
 
-class FilteredVertMenu:
+class DynVertMenuBase:
     def __init__(
         self,
         items: Iterable[Item],
@@ -26,7 +26,7 @@ class FilteredVertMenu:
         self._vertmenu = VertMenu(
             self._all_items, selected_item, selected_handler, accept_handler
         )
-        self.buffer = Buffer(multiline=False, on_text_changed=self.apply_filter)
+        self.buffer = Buffer(multiline=False, on_text_changed=self.on_change)
         self.control = BufferControl(
             buffer=self.buffer, key_bindings=self._vertmenu._init_key_bindings()
         )
@@ -37,15 +37,15 @@ class FilteredVertMenu:
             ]
         )
 
-    def apply_filter(self, buf: Buffer) -> None:
+    def on_change(self, buf: Buffer) -> None:
         raise NotImplementedError
 
     def __pt_container__(self) -> Container:
         return self.window
 
 
-class RegexFilterVertMenu(FilteredVertMenu):
-    def apply_filter(self, buf: Buffer) -> None:
+class RegexFilterVertMenu(DynVertMenuBase):
+    def on_change(self, buf: Buffer) -> None:
         regex_str = buf.document.text
         try:
             regex = re.compile(regex_str)
@@ -57,8 +57,8 @@ class RegexFilterVertMenu(FilteredVertMenu):
         self._vertmenu.control.items = filtered_items
 
 
-class FuzzFilterVertMenu(FilteredVertMenu):
-    def apply_filter(self, buf: Buffer) -> None:
+class FuzzFilterVertMenu(DynVertMenuBase):
+    def on_change(self, buf: Buffer) -> None:
         text = buf.document.text
         regex_str = ".*".join(text)
         try:
@@ -69,3 +69,32 @@ class FuzzFilterVertMenu(FilteredVertMenu):
             (item for item in self._all_items if regex.search(to_plain_text(item[0])))
         )
         self._vertmenu.control.items = filtered_items
+
+
+class RegexSearchVertMenu(DynVertMenuBase):
+    def on_change(self, buf: Buffer) -> None:
+        regex_str = buf.document.text
+        try:
+            regex = re.compile(regex_str)
+        except re.error:
+            return
+        item = next(
+            (item for item in self._all_items if regex.search(to_plain_text(item[0])))
+        )
+        if item:
+            self._vertmenu.control.selected_item = item
+
+
+class FuzzSearchVertMenu(DynVertMenuBase):
+    def on_change(self, buf: Buffer) -> None:
+        text = buf.document.text
+        regex_str = ".*".join(text)
+        try:
+            regex = re.compile(regex_str, re.IGNORECASE)
+        except re.error:
+            return
+        item = next(
+            (item for item in self._all_items if regex.search(to_plain_text(item[0])))
+        )
+        if item:
+            self._vertmenu.control.selected_item = item

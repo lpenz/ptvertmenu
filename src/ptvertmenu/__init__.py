@@ -2,8 +2,12 @@
 
 import importlib.metadata
 
-from .filteredmenu import FuzzFilterVertMenu, RegexFilterVertMenu
-from .searchingmenu import FuzzSearchVertMenu, RegexSearchVertMenu
+from .dynvertmenu import (
+    FuzzFilterVertMenu,
+    FuzzSearchVertMenu,
+    RegexFilterVertMenu,
+    RegexSearchVertMenu,
+)
 from .vertmenu import Item, VertMenu
 
 
