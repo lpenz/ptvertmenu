@@ -24,7 +24,11 @@ class DynVertMenuBase:
     ):
         self._all_items = tuple(items)
         self._vertmenu = VertMenu(
-            self._all_items, selected_item, selected_handler, accept_handler
+            self._all_items,
+            selected_item,
+            selected_handler,
+            accept_handler,
+            focusable=False,
         )
         self.buffer = Buffer(multiline=False, on_text_changed=self.on_change)
         self.control = BufferControl(
@@ -36,6 +40,7 @@ class DynVertMenuBase:
                 self._vertmenu,
             ]
         )
+        self._vertmenu.focus_window = self.window
 
     def on_change(self, buf: Buffer) -> None:
         raise NotImplementedError

@@ -31,6 +31,7 @@ class VertMenu:
         self.window = Window(
             self.control, width=self.preferred_width, style=self.get_style
         )
+        self.focus_window: Container = self.window
         if selected_item is not None:
             self.control.selected_item = selected_item
 
@@ -77,7 +78,7 @@ class VertMenu:
         return kb
 
     def get_style(self) -> str:
-        if get_app().layout.has_focus(self.window):
+        if get_app().layout.has_focus(self.focus_window):
             return "class:vertmenu.focused"
         else:
             return "class:vertmenu.unfocused"
