@@ -47,6 +47,55 @@ class DynVertMenuBase:
     def on_change(self, buf: Buffer) -> None:
         raise NotImplementedError
 
+    def handle_selected(self) -> None:
+        self._vertmenu.handle_selected()
+
+    def handle_accept(self) -> None:
+        self._vertmenu.handle_accept()
+
+    @property
+    def items(self) -> tuple[Item, ...]:
+        return self._all_items
+
+    @items.setter
+    def items(self, items: Iterable[Item]) -> None:
+        self._all_items = tuple(items)
+        self.on_change(self.buffer)
+
+    @property
+    def selected(self) -> int:
+        return self._vertmenu.selected
+
+    @selected.setter
+    def selected(self, selected: int) -> None:
+        self._vertmenu.selected = selected
+
+    @property
+    def selected_item(self) -> Optional[Item]:
+        return self._vertmenu.selected_item
+
+    @selected_item.setter
+    def selected_item(self, item: Item) -> None:
+        self._vertmenu.selected_item = item
+
+    @property
+    def selected_handler(self) -> Optional[Callable[[Optional[Item], int], None]]:
+        return self._vertmenu.selected_handler
+
+    @selected_handler.setter
+    def selected_handler(
+        self, selected_handler: Optional[Callable[[Optional[Item], int], None]]
+    ) -> None:
+        self._vertmenu.selected_handler = selected_handler
+
+    @property
+    def accept_handler(self) -> Optional[Callable[[Item], None]]:
+        return self._vertmenu.accept_handler
+
+    @accept_handler.setter
+    def accept_handler(self, accept_handler: Optional[Callable[[Item], None]]) -> None:
+        self._vertmenu.accept_handler = accept_handler
+
     def __pt_container__(self) -> Container:
         return self.window
 
