@@ -28,7 +28,7 @@ PATH = "/usr/share/man"
 ManItem = tuple[Any, tuple[int, str]]
 
 
-def generator() -> Generator[ManItem, None, None]:
+def generator(section: Optional[int] = None) -> Generator[ManItem, None, None]:
     labelre = re.compile(
         re.escape(PATH)
         + r"/(?P<label>man(?P<section>[0-9]+)/(?P<base>.*))\.[0-9]\S*\.gz"
@@ -38,6 +38,8 @@ def generator() -> Generator[ManItem, None, None]:
             path = os.path.join(root, filename)
             m = labelre.match(path)
             if not m:
+                continue
+            if section is not None and int(m.group("section")) != section:
                 continue
             yield (m.group("label"), (int(m.group("section")), m.group("base")))
 
@@ -55,11 +57,11 @@ async def man_loader(
             queue.task_done()
             continue
         contents.text = f"Loading {item[1]}..."
-        width = 80
+        manwidth = ""
         if contents.window.render_info:
-            width = contents.window.render_info.window_width - 1
+            manwidth = f"MANWIDTH={contents.window.render_info.window_width - 1} "
         man = await asyncio.create_subprocess_shell(
-            f"MANWIDTH={width} man --encoding=utf-8 {str(item[0])} {item[1]} | col -bh",
+            f"{manwidth}man --encoding=utf-8 {str(item[0])} {item[1]} | col -bh",
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.STDOUT,
         )
@@ -68,8 +70,8 @@ async def man_loader(
         queue.task_done()
 
 
-async def manmenu() -> None:
-    items: List[ManItem] = list(generator())
+async def manmenu(section: Optional[int] = None) -> None:
+    items: List[ManItem] = list(generator(section=section))
     items.sort()
     contents = TextArea(text="", multiline=True, wrap_lines=True, read_only=True)
     manloader_queue: asyncio.Queue[Optional[tuple[int, str]]] = asyncio.Queue()
@@ -131,10 +133,16 @@ async def manmenu() -> None:
 async def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
+        "--section",
+        type=int,
+        default=None,
+        help="Show only the specified man section",
+    )
+    parser.add_argument(
         "--version", "-V", action="version", version="%(prog)s " + ptvertmenu.version()
     )
-    _ = parser.parse_args()
-    await manmenu()
+    args = parser.parse_args()
+    await manmenu(section=args.section)
 
 
 if __name__ == "__main__":
