@@ -61,11 +61,12 @@ async def man_loader(
         if contents.window.render_info:
             manwidth = f"MANWIDTH={contents.window.render_info.window_width - 1} "
         man = await asyncio.create_subprocess_shell(
-            f"{manwidth}man --encoding=utf-8 {str(item[0])} {item[1]} | col -bh",
+            f"{manwidth}man --encoding=utf-8 {str(item[0])} {item[1]}",
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.STDOUT,
         )
         (manpage, _) = await man.communicate()
+        manpage = re.sub(rb"\x1b\[[0-9;]*m?", b"", manpage)
         contents.text = manpage.decode("utf-8", errors="ignore").replace("\t", "    ")
         queue.task_done()
 
