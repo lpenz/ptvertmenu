@@ -21,6 +21,7 @@ class DynVertMenuBase:
         selected_item: Optional[Item] = None,
         selected_handler: Optional[Callable[[Optional[Item], int], None]] = None,
         accept_handler: Optional[Callable[[Item], None]] = None,
+        menu_max_width: Optional[int] = None,
     ):
         self._all_items = tuple(items)
         self._vertmenu = VertMenu(
@@ -29,6 +30,7 @@ class DynVertMenuBase:
             selected_handler,
             accept_handler,
             focusable=False,
+            max_width=menu_max_width,
         )
         self.buffer = Buffer(multiline=False, on_text_changed=self.on_change)
         self.control = BufferControl(

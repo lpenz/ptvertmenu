@@ -20,6 +20,7 @@ class VertMenu:
         selected_handler: Optional[Callable[[Optional[Item], int], None]] = None,
         accept_handler: Optional[Callable[[Item], None]] = None,
         focusable: bool = True,
+        max_width: Optional[int] = None,
     ):
         self.accept_handler = accept_handler
         self.control = VertMenuUIControl(
@@ -28,6 +29,7 @@ class VertMenu:
             key_bindings=self._init_key_bindings(),
             selected_handler=selected_handler,
         )
+        self.max_width = max_width
         self.window = Window(
             self.control, width=self.preferred_width, style=self.get_style
         )
@@ -93,6 +95,8 @@ class VertMenu:
     def preferred_width(self) -> int:
         width = self.control.preferred_width(0)
         assert width
+        if self.max_width is not None:
+            return min(width, self.max_width)
         return width
 
     @property
