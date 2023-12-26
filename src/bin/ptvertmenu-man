@@ -106,8 +106,8 @@ async def manmenu(
     # Use a basic style
     style = Style.from_dict(
         {
-            "vertmenu.focused vertmenu.selected": "fg:black bg:white",
-            "vertmenu.unfocused vertmenu.selected": "reverse",
+            "vertmenu.focused vertmenu.selected": "bold fg:white bg:red",
+            "vertmenu.unfocused vertmenu.selected": "fg:white bg:darkred",
             "vertmenu.unfocused vertmenu.item": "fg:grey bg:black",
         }
     )
