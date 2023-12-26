@@ -1,0 +1,66 @@
+#!/usr/bin/env expect
+
+proc exp_prompt {} {
+    expect -re {[$] $} {};
+}
+
+proc exp_sleep { t } {
+    expect {
+        -timeout "$t"
+        timeout {}
+        -re {.} { exp_continue; }
+    }
+}
+
+proc send_sleep { s { t 1 } } {
+    exp_send "$s";
+    exp_sleep "$t";
+}
+
+spawn -noecho /bin/bash -i;
+exp_prompt;
+
+exp_send "source venv/bin/activate\r";
+exp_prompt;
+
+exp_send "src/bin/ptvertmenu-man --section 1 --menu-max-width=20\r";
+expect {>} {};
+
+set BACKSPACE "\010";
+set TAB "\011";
+set UP "\033\[A";
+set DOWN "\033\[B";
+set PGDN "\033\[6~";
+
+exp_sleep 1;
+send_sleep "$DOWN";
+send_sleep "$DOWN";
+
+send_sleep "b";
+send_sleep "a";
+send_sleep "s";
+send_sleep "h";
+send_sleep "$DOWN";
+send_sleep "$DOWN";
+
+send_sleep "\011";
+send_sleep "$PGDN";
+send_sleep "$PGDN";
+
+send_sleep "$TAB";
+send_sleep "$UP";
+send_sleep "$BACKSPACE";
+send_sleep "$BACKSPACE";
+send_sleep "$BACKSPACE";
+send_sleep "$BACKSPACE";
+send_sleep "$DOWN";
+send_sleep "$DOWN";
+send_sleep "$UP";
+send_sleep "$UP";
+
+exp_send "\033q";
+exp_prompt;
+exp_send "exit\r";
+expect eof
+wait
+

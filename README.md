@@ -7,6 +7,10 @@
 Vertical menu widget for the excellent [prompt-toolkit], with optional
 fzf-inspired search
 
+This is a demo of the included [ptvertmenu-man](src/bin/ptvertmenu-man) utility:
+
+![demo-man](demos/demo-man.gif)
+
 
 ## Getting started
 
