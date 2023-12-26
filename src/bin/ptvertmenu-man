@@ -71,7 +71,9 @@ async def man_loader(
         queue.task_done()
 
 
-async def manmenu(section: Optional[int] = None) -> None:
+async def manmenu(
+    section: Optional[int] = None, menu_max_width: Optional[int] = None
+) -> None:
     items: List[ManItem] = list(generator(section=section))
     items.sort()
     contents = TextArea(text="", multiline=True, wrap_lines=True, read_only=True)
@@ -91,6 +93,7 @@ async def manmenu(section: Optional[int] = None) -> None:
         items=cast(Sequence[Item], items),
         selected_handler=selected_handler,
         accept_handler=accept_handler,
+        menu_max_width=menu_max_width,
     )
     root_container = VSplit(
         [
@@ -140,10 +143,16 @@ async def main() -> None:
         help="Show only the specified man section",
     )
     parser.add_argument(
+        "--menu-max-width",
+        type=int,
+        default=None,
+        help="Max width of the menu on the left",
+    )
+    parser.add_argument(
         "--version", "-V", action="version", version="%(prog)s " + ptvertmenu.version()
     )
     args = parser.parse_args()
-    await manmenu(section=args.section)
+    await manmenu(section=args.section, menu_max_width=args.menu_max_width)
 
 
 if __name__ == "__main__":
