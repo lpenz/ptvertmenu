@@ -4,7 +4,7 @@ Look at files in the current directory
 """
 
 import os
-from typing import Optional, Any
+from typing import Any, Optional
 
 import ptvertmenu
 from prompt_toolkit import Application
@@ -19,7 +19,9 @@ from prompt_toolkit.widgets import Frame, TextArea
 E = KeyPressEvent
 
 
-def showfile(contents: TextArea, item: Optional[tuple[Any, Any]], index: int) -> None:
+def showfile(
+    contents: TextArea, item: Optional[tuple[Any, Any]], index: Optional[int]
+) -> None:
     assert item
     name = item[1]
     try:

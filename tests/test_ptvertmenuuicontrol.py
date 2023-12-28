@@ -1,8 +1,7 @@
 """ptvertmenuuicontrol tests"""
 
-from typing import List
-
 import unittest
+from typing import List
 
 from prompt_toolkit.data_structures import Point
 from prompt_toolkit.mouse_events import MouseButton, MouseEvent, MouseEventType
@@ -67,6 +66,7 @@ class TestVertMenuUIControlSingle(unittest.TestCase):
         )
 
     def test_selected(self) -> None:
+        assert self.control.selected is not None
         self.control.selected += 1
         self.assertEqual(self.control.selected, 1)
         self.assertEqual(self.control.selected_item, ("lunch", "lunch"))
@@ -103,7 +103,7 @@ class TestVertMenuUIControlSingle(unittest.TestCase):
         self.assertEqual(self.control.selected, 0)
         self.assertEqual(self.control.selected_item, ("breakfast", "breakfast"))
         self.control.items = tuple()
-        self.assertEqual(self.control.selected, 0)
+        self.assertEqual(self.control.selected, None)
         self.assertEqual(self.control.selected_item, None)
         self.control.items = tuple(self.items)
         self.assertEqual(self.control.items, tuple(self.items))
@@ -121,6 +121,14 @@ class TestVertMenuUIControlSingle(unittest.TestCase):
         width = self.control.preferred_width(999)
         self.assertEqual(width, len(bigitem))
 
+    def test_select_none(self) -> None:
+        self.control.selected = None
+        self.assertEqual(self.control.selected_item, None)
+
+    def test_select_item_none(self) -> None:
+        self.control.selected_item = None
+        self.assertEqual(self.control.selected, None)
+
     def test_mouse(self) -> None:
         for i in range(len(self.items)):
             self.control.mouse_handler(mouse_click(i))
@@ -135,10 +143,10 @@ class TestVertMenuUIControlEmpty(unittest.TestCase):
     def test_methods(self) -> None:
         """Just call all methods and let exceptions fail"""
         self.control.items = self.control.items
+        self.assertEqual(self.control.selected, None)
         self.control.selected = self.control.selected
         self.assertEqual(self.control.selected_item, None)
-        with self.assertRaises(IndexError):
-            self.control.selected_item = None
+        self.control.selected_item = None
         self.control.preferred_width(999)
         self.control.preferred_height(999, 999, False, None)
         self.control.is_focusable()
@@ -169,6 +177,7 @@ class TestVertMenuUIControlMultiLine(unittest.TestCase):
         return "\n".join((f"item {item} line {lineno}" for lineno in range(self.LINES)))
 
     def test_down_up(self) -> None:
+        assert self.control.selected is not None
         self.control.selected += 1
         # Check that we are in the bottom line of the item:
         self.assertEqual(self.control.selected, 1)

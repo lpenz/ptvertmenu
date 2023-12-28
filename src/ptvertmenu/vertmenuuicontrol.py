@@ -40,10 +40,12 @@ class VertMenuUIControl(UIControl):
         items: Iterable[Item],
         focusable: FilterOrBool = True,
         key_bindings: Optional[KeyBindingsBase] = None,
-        selected_handler: Optional[Callable[[Optional[Item], int], None]] = None,
+        selected_handler: Optional[
+            Callable[[Optional[Item], Optional[int]], None]
+        ] = None,
     ):
         self._items = tuple(items)
-        self._selected: Index = Index(0)
+        self._selected: Optional[Index] = Index(0)
         self.focusable = to_filter(focusable)
         self.key_bindings = key_bindings
         self.selected_handler = selected_handler
@@ -86,10 +88,13 @@ class VertMenuUIControl(UIControl):
     @items.setter
     def items(self, items: Iterable[Item]) -> None:
         previous = None
-        if self._items:
+        if self._items and self._selected is not None:
             previous = self._items[self._selected]
         self._items = tuple(items)
-        self._selected = Index(0)
+        if self._items:
+            self._selected = Index(0)
+        else:
+            self._selected = None
         self._moved_down = False
         self._gen_lineno_mappings()
         if previous is None:
@@ -103,27 +108,36 @@ class VertMenuUIControl(UIControl):
             self.handle_selected()
 
     @property
-    def selected(self) -> int:
+    def selected(self) -> Optional[int]:
+        if self._selected is None or not self._items:
+            return None
         return cast(int, self._selected)
 
     @selected.setter
-    def selected(self, selected: int) -> None:
+    def selected(self, selected: Optional[int]) -> None:
         previous = self._selected
-        selected = max(0, selected)
-        selected = min(selected, len(self._items) - 1)
-        self._selected = Index(selected)
-        self._moved_down = self._selected > previous
+        if selected is None:
+            self._selected = None
+        else:
+            selected = max(0, selected)
+            selected = min(selected, len(self._items) - 1)
+            self._selected = Index(selected)
+            if previous is not None:
+                self._moved_down = self._selected > previous
         if self._selected != previous:
             self.handle_selected()
 
     @property
     def selected_item(self) -> Optional[Item]:
-        if not self._items:
+        if self._selected is None or not self._items:
             return None
         return self._items[self._selected]
 
     @selected_item.setter
-    def selected_item(self, item: Item) -> None:
+    def selected_item(self, item: Optional[Item]) -> None:
+        if item is None:
+            self._selected = None
+            return
         for index, current in self._items_enumerate():
             if current == item:
                 self._selected = index
@@ -160,6 +174,8 @@ class VertMenuUIControl(UIControl):
         item = self.selected_item
         if item is None:
             return Point(x=0, y=0)
+        if self._selected is None:
+            return Point(x=0, y=0)
         lineno = self._index_to_lineno[self._selected]
         if self._moved_down:
             # Put the cursor in the last line of a multi-line item if
@@ -186,16 +202,37 @@ class VertMenuUIControl(UIControl):
         return None
 
     def move_cursor_down(self) -> None:
-        self.selected += 1
+        self.go_relative(1)
         # Unmark _moved_down because this is only called when the
         # cursor is at the top:
         self._moved_down = False
 
     def move_cursor_up(self) -> None:
-        self.selected -= 1
+        self.go_relative(-1)
         # Mark _moved_down because this called when the cursor is at
         # the bottom:
         self._moved_down = True
 
     def get_key_bindings(self) -> Optional[KeyBindingsBase]:
         return self.key_bindings
+
+    def go_first(self) -> None:
+        if not self._items:
+            self._selected = None
+            return
+        self.selected = 0
+
+    def go_last(self) -> None:
+        if not self._items:
+            self._selected = None
+            return
+        self.selected = len(self.items) - 1
+
+    def go_relative(self, positions: int) -> None:
+        if not self._items:
+            self._selected = None
+            return
+        if self.selected is None:
+            self.selected = 0
+        else:
+            self.selected += positions

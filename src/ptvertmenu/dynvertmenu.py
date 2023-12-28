@@ -19,7 +19,9 @@ class DynVertMenuBase:
         self,
         items: Iterable[Item],
         selected_item: Optional[Item] = None,
-        selected_handler: Optional[Callable[[Optional[Item], int], None]] = None,
+        selected_handler: Optional[
+            Callable[[Optional[Item], Optional[int]], None]
+        ] = None,
         accept_handler: Optional[Callable[[Item], None]] = None,
         menu_max_width: Optional[int] = None,
     ):
@@ -63,7 +65,7 @@ class DynVertMenuBase:
         self.on_change(self.buffer)
 
     @property
-    def selected(self) -> int:
+    def selected(self) -> Optional[int]:
         return self._vertmenu.selected
 
     @selected.setter

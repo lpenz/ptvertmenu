@@ -17,7 +17,9 @@ class VertMenu:
         self,
         items: Iterable[Item],
         selected_item: Optional[Item] = None,
-        selected_handler: Optional[Callable[[Optional[Item], int], None]] = None,
+        selected_handler: Optional[
+            Callable[[Optional[Item], Optional[int]], None]
+        ] = None,
         accept_handler: Optional[Callable[[Item], None]] = None,
         focusable: bool = True,
         max_width: Optional[int] = None,
@@ -44,33 +46,33 @@ class VertMenu:
         @kb.add("escape", "home")
         @kb.add("c-pageup")
         def _first(event: E) -> None:
-            self.control.selected = 0
+            self.control.go_first()
 
         @kb.add("c-end")
         @kb.add("escape", "end")
         @kb.add("c-pagedown")
         def _last(event: E) -> None:
-            self.control.selected = len(self.control.items) - 1
+            self.control.go_last()
 
         @kb.add("up")
         def _up(event: E) -> None:
-            self.control.selected -= 1
+            self.control.go_relative(-1)
 
         @kb.add("down")
         def _down(event: E) -> None:
-            self.control.selected += 1
+            self.control.go_relative(1)
 
         @kb.add("pageup")
         def _pageup(event: E) -> None:
             w = self.window
             if w.render_info:
-                self.control.selected -= len(w.render_info.displayed_lines)
+                self.control.go_relative(-len(w.render_info.displayed_lines))
 
         @kb.add("pagedown")
         def _pagedown(event: E) -> None:
             w = self.window
             if w.render_info:
-                self.control.selected += len(w.render_info.displayed_lines)
+                self.control.go_relative(len(w.render_info.displayed_lines))
 
         @kb.add(" ")
         @kb.add("enter")
@@ -108,7 +110,7 @@ class VertMenu:
         self.control.items = tuple(items)
 
     @property
-    def selected(self) -> int:
+    def selected(self) -> Optional[int]:
         return self.control.selected
 
     @selected.setter
@@ -129,7 +131,8 @@ class VertMenu:
 
     @selected_handler.setter
     def selected_handler(
-        self, selected_handler: Optional[Callable[[Optional[Item], int], None]]
+        self,
+        selected_handler: Optional[Callable[[Optional[Item], Optional[int]], None]],
     ) -> None:
         self.control.selected_handler = selected_handler
 
