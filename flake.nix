@@ -15,7 +15,7 @@
         python = pkgs.python3Packages;
         ptvertmenu = pkgs.python3Packages.buildPythonPackage {
           pname = "ptvertmenu";
-          version = "0.2.0";
+          version = "0.2.1";
           src = self;
           requirements = builtins.readFile ./requirements.txt;
           propagatedBuildInputs = [
