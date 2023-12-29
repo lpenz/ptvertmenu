@@ -1,6 +1,8 @@
 [![CI](https://github.com/lpenz/ptvertmenu/actions/workflows/ci.yml/badge.svg)](https://github.com/lpenz/ptvertmenu/actions/workflows/ci.yml)
 [![coveralls](https://coveralls.io/repos/github/lpenz/ptvertmenu/badge.svg?branch=main)](https://coveralls.io/github/lpenz/ptvertmenu?branch=main)
 [![PyPI](https://img.shields.io/pypi/v/ptvertmenu)](https://pypi.org/project/ptvertmenu/)
+[![github](https://img.shields.io/github/v/release/lpenz/disk-img-tool?logo=github)](https://github.com/lpenz/disk-img-tool/releases)
+
 
 # ptvertmenu
 
