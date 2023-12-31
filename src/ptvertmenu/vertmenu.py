@@ -1,6 +1,6 @@
 """Vertical menu widget for prompt-toolkit"""
 
-from typing import Callable, Iterable, Optional
+from typing import Callable, Iterable, Optional, Tuple
 
 from prompt_toolkit.application import get_app
 from prompt_toolkit.key_binding import KeyBindings
@@ -102,7 +102,7 @@ class VertMenu:
         return width
 
     @property
-    def items(self) -> tuple[Item, ...]:
+    def items(self) -> Tuple[Item, ...]:
         return self.control.items
 
     @items.setter

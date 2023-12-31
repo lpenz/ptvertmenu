@@ -9,6 +9,7 @@ from typing import (
     Iterator,
     NewType,
     Optional,
+    Tuple,
     cast,
 )
 
@@ -28,7 +29,7 @@ from prompt_toolkit.mouse_events import MouseEvent, MouseEventType
 if TYPE_CHECKING:
     from prompt_toolkit.key_binding.key_bindings import NotImplementedOrNone
 
-Item = tuple[AnyFormattedText, Any]
+Item = Tuple[AnyFormattedText, Any]
 Index = NewType("Index", int)
 
 
@@ -63,7 +64,7 @@ class VertMenuUIControl(UIControl):
         if self.selected_handler is not None:
             self.selected_handler(self.selected_item, self.selected)
 
-    def _items_enumerate(self) -> Iterator[tuple[Index, Item]]:
+    def _items_enumerate(self) -> Iterator[Tuple[Index, Item]]:
         for index, item in enumerate(self._items):
             yield Index(index), item
 
@@ -82,7 +83,7 @@ class VertMenuUIControl(UIControl):
                 self._width = max(self._width, len(line))
 
     @property
-    def items(self) -> tuple[Item, ...]:
+    def items(self) -> Tuple[Item, ...]:
         return self._items
 
     @items.setter

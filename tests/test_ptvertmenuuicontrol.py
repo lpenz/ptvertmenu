@@ -102,7 +102,7 @@ class TestVertMenuUIControlSingle(unittest.TestCase):
         self.control.items = tuple([self.items[0]] + self.items[2:])
         self.assertEqual(self.control.selected, 0)
         self.assertEqual(self.control.selected_item, ("breakfast", "breakfast"))
-        self.control.items = tuple()
+        self.control.items = ()
         self.assertEqual(self.control.selected, None)
         self.assertEqual(self.control.selected_item, None)
         self.control.items = tuple(self.items)
@@ -111,13 +111,13 @@ class TestVertMenuUIControlSingle(unittest.TestCase):
         self.assertEqual(self.control.selected_item, ("breakfast", "breakfast"))
 
     def test_items_width_update(self) -> None:
-        bigitem = ", ".join((str(i) for i in range(50)))
-        self.control.items = tuple([(bigitem, bigitem)])
+        bigitem = ", ".join(str(i) for i in range(50))
+        self.control.items = ((bigitem, bigitem),)
         width = self.control.preferred_width(999)
         self.assertEqual(width, len(bigitem))
         # Check if using a smaller bigitem updates the width
-        bigitem = ", ".join((str(i) for i in range(30)))
-        self.control.items = tuple([(bigitem, bigitem)])
+        bigitem = ", ".join(str(i) for i in range(30))
+        self.control.items = ((bigitem, bigitem),)
         width = self.control.preferred_width(999)
         self.assertEqual(width, len(bigitem))
 
@@ -137,7 +137,7 @@ class TestVertMenuUIControlSingle(unittest.TestCase):
 
 class TestVertMenuUIControlEmpty(unittest.TestCase):
     def setUp(self) -> None:
-        self.items: tuple[Item, ...] = tuple()
+        self.items: tuple[Item, ...] = ()
         self.control = VertMenuUIControl(self.items)
 
     def test_methods(self) -> None:
@@ -174,7 +174,7 @@ class TestVertMenuUIControlMultiLine(unittest.TestCase):
         self.control = VertMenuUIControl(self.items)
 
     def label(self, item: int) -> str:
-        return "\n".join((f"item {item} line {lineno}" for lineno in range(self.LINES)))
+        return "\n".join(f"item {item} line {lineno}" for lineno in range(self.LINES))
 
     def test_down_up(self) -> None:
         assert self.control.selected is not None
